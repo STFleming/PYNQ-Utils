@@ -120,41 +120,41 @@ def _resolve_devices_overlay_res(
     If the device is only one and is an edge device, file is resolved directly
     to ``overlay_res.ext``.
     """
-    from pynq.pl_server.device import Device
-    from pynq.pl_server.embedded_device import EmbeddedDevice
+    #from pynq.pl_server.device import Device
+    #from pynq.pl_server.embedded_device import EmbeddedDevice
 
     overlay_res_filename = os.path.splitext(overlay_res_link)[0]
-    if len(devices) == 0 and type(Device.devices[0]) == EmbeddedDevice:
-        overlay_res_fullpath = os.path.join(src_path, overlay_res_filename)
-        _resolve_devices_overlay_res_helper(
-            devices[0],
-            src_path,
-            overlay_res_filename,
-            overlay_res_link,
-            overlay_res_fullpath,
-            logger,
-            fail,
-        )
-        return
-    for device in devices:
-        overlay_res_download_path = os.path.join(src_path, overlay_res_filename + ".d")
-        overlay_res_filename_split = os.path.splitext(overlay_res_filename)
-        overlay_res_filename_ext = "{}.{}{}".format(
-            overlay_res_filename_split[0], device, overlay_res_filename_split[1]
-        )
-        overlay_res_fullpath = os.path.join(
-            overlay_res_download_path, overlay_res_filename_ext
-        )
-        _resolve_devices_overlay_res_helper(
-            device,
-            src_path,
-            overlay_res_filename,
-            overlay_res_link,
-            overlay_res_fullpath,
-            logger,
-            fail,
-            overlay_res_download_path,
-        )
+    #if len(devices) == 0 and type(Device.devices[0]) == EmbeddedDevice:
+    overlay_res_fullpath = os.path.join(src_path, overlay_res_filename)
+    _resolve_devices_overlay_res_helper(
+        devices[0],
+        src_path,
+        overlay_res_filename,
+        overlay_res_link,
+        overlay_res_fullpath,
+        logger,
+        fail,
+    )
+    # return
+    #for device in devices:
+    #    overlay_res_download_path = os.path.join(src_path, overlay_res_filename + ".d")
+    #    overlay_res_filename_split = os.path.splitext(overlay_res_filename)
+    #    overlay_res_filename_ext = "{}.{}{}".format(
+    #        overlay_res_filename_split[0], device, overlay_res_filename_split[1]
+    #    )
+    #    overlay_res_fullpath = os.path.join(
+    #        overlay_res_download_path, overlay_res_filename_ext
+    #    )
+    #    _resolve_devices_overlay_res_helper(
+    #        device,
+    #        src_path,
+    #        overlay_res_filename,
+    #        overlay_res_link,
+    #        overlay_res_fullpath,
+    #        logger,
+    #        fail,
+    #        overlay_res_download_path,
+    #    )
 
 
 def _resolve_all_overlay_res_from_link(overlay_res_link, src_path, logger, fail=False):

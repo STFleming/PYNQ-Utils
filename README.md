@@ -1,5 +1,5 @@
 ![pynq_logo](https://github.com/Xilinx/PYNQ/raw/master/logo.png)
-### version 0.1.0 
+### version 0.1.1 
 
 PYNQ-Utils is a repository containing utilities used in various other repos and projects across the PYNQ ecosystem. The tools are categorized into three sections:
 * ``/runtime`` for utilities that are used in the PYNQ runtime, such as ```ReprDict``` which is used to pretty print dictionaries in Jupyter.
@@ -10,7 +10,7 @@ PYNQ-Utils is a repository containing utilities used in various other repos and 
 
 To install PYNQ-Utils use the following command:
 ```Bash
-python3 -m pip install git+https://github.com/Xilinx/PYNQ-Utils
+python3 -m pip install pynqutils 
 ```
 
 ## setup.py example
