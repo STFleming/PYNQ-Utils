@@ -4,7 +4,7 @@
 import os
 import xml
 import xml.etree.ElementTree as ET
-from typing import Union
+from typing import Union, Dict, Set
 from tqdm.notebook import trange, tqdm
 import json
 import re
@@ -61,6 +61,15 @@ def find_xml(name, path)->list:
         if name in files:
             xml_paths.append(os.path.join(root, name))
     return xml_paths
+ 
+def find_pin_mapping_file(xml_tree)->str:
+    '''
+    Returns the path to the pin_mapping file for the board
+    '''
+    for child in xml_tree.find('components'):
+        if child.attrib['name'] == 'part0':
+            return child.attrib['pin_map_file']
+
 
 def find_part(xml_tree)->str:
     '''
@@ -205,7 +214,7 @@ class Boards(BoardStore):
 
 class Board:
     '''
-    The Board class interacts with the board.xml and preset.xml files in the
+    The Board class interacts with the board.xml, preset.xml, and pins.xml files in the
     board folders of the XilinxBoardStore repo. 
     '''
     
@@ -232,6 +241,13 @@ class Board:
         except:
             self.board_preset_path = []
             
+        # We need to do a try catch here because not all boards have a pin mapping file
+        try:
+            pin_mapping_file = find_pin_mapping_file(self.board_root)
+            self.pin_mapping_path = os.path.join(os.path.split(os.path.join(self.board_xml_path))[0],pin_mapping_file)
+        except:
+            self.pin_mapping_path = []
+
         self.part_name = find_part(self.board_root)
         self.file_version = file_version(self.board_root)
         self.name = self.board_root.attrib['name']
@@ -264,6 +280,22 @@ class Board:
         return presets
 
             
+    def get_pin_mapping_dict(self)->Dict[str, Dict[str, str]]:
+        """
+        Returns a dictionary with the pins mapping from the pin mapping file
+        This is used in conjunction with the metadata for a design to target
+        a particular board taking into consideration the I/O constraints.
+        """
+        pins:Dict[str, Dict[str, str]] = {}
+        pins_tree = ET.parse(self.pin_mapping_path)
+        pins_root = pins_tree.getroot()
+        for p in pins_root.iter('pin'):
+            pins[p.get('name')] = {}
+            pins[p.get('name')]["index"] = p.get('index') 
+            pins[p.get('name')]["iostandard"] = p.get('iostandard') 
+            pins[p.get('name')]["loc"] = p.get('loc') 
+        return pins
+
     def find_family(self)->str:
         '''
         We use the preset.xml file to find the board family
